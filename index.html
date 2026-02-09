@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>¿Me perdonas?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg,#ff6a88,#ff99ac,#ffd1dc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+.card{
+    background:white;
+    padding:40px 30px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 20px 40px rgba(0,0,0,.25);
+    max-width:400px;
+    width:90%;
+    z-index:2;
+}
+
+h1{
+    color:#ff3f6c;
+    margin-bottom:15px;
+}
+
+p{
+    color:#555;
+    margin-bottom:30px;
+}
+
+.buttons{
+    position:relative;
+    height:80px;
+}
+
+button{
+    border:none;
+    border-radius:40px;
+    padding:14px 30px;
+    font-size:1rem;
+    cursor:pointer;
+    transition:all .3s ease;
+    position:absolute;
+}
+
+#yes{
+    background:#6a7cff;
+    color:white;
+    left:50%;
+    transform:translateX(-50%) scale(1);
+    z-index:2;
+}
+
+#no{
+    background:#ff6b6b;
+    color:white;
+    right:0;
+}
+
+#msg{
+    display:none;
+    margin-top:25px;
+    font-size:1.2rem;
+    font-weight:bold;
+    color:#6a7cff;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="card">
+    <h1>¿Me perdonas? 🥺💖</h1>
+    <p>No te voy a dejar decir que no.</p>
+
+    <div class="buttons">
+        <button id="yes" onclick="accept()">Sí 💕</button>
+        <button id="no">No 😐</button>
+    </div>
+
+    <div id="msg">Sabía que dirías que sí 🥹🎉</div>
+</div>
+
+<script>
+let scale = 1;
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+
+no.addEventListener("mouseenter", growYes);
+no.addEventListener("click", growYes);
+
+function growYes(){
+    scale += 0.35;
+    yes.style.transform = `translateX(-50%) scale(${scale})`;
+}
+
+function accept(){
+    document.getElementById("msg").style.display="block";
+    confetti();
+}
+
+// CONFETI
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+let pieces = [];
+
+function resize(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+}
+resize();
+addEventListener("resize",resize);
+
+function confetti(){
+    pieces=[];
+    for(let i=0;i<180;i++){
+        pieces.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height-canvas.height,
+            r:Math.random()*6+4,
+            c:`hsl(${Math.random()*360},80%,60%)`,
+            v:Math.random()*3+2
+        });
+    }
+    animate();
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+        ctx.beginPath();
+        ctx.fillStyle=p.c;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+        p.y+=p.v;
+        if(p.y>canvas.height)p.y=-10;
+    });
+    requestAnimationFrame(animate);
+}
+</script>
+
+</body>
+</html>
