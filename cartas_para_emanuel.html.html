@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50 Cartas para Emanuel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+body{
+background:#0f1b2d;
+margin:0;
+font-family:Inter, sans-serif;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+max-width:420px;
+width:92%;
+text-align:center;
+}
+
+h1{
+font-family:'Playfair Display', serif;
+font-size:32px;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#c9d1d9;
+margin-bottom:25px;
+}
+
+button{
+padding:14px 25px;
+margin:8px;
+border:none;
+border-radius:12px;
+background:#1f3a5f;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#2e507c;
+}
+
+.card{
+display:none;
+background:white;
+color:#1b1b1b;
+border-radius:18px;
+padding:32px;
+margin-top:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.35);
+animation:openCard 0.7s ease;
+}
+
+@keyframes openCard{
+from{
+opacity:0;
+transform:translateY(40px) scale(.95);
+}
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+.card-number{
+font-size:42px;
+font-family:'Playfair Display', serif;
+color:#c8a96b;
+margin-bottom:10px;
+}
+
+.card-text{
+font-size:17px;
+line-height:1.7;
+}
+
+.notice{
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+background:#1f3a5f;
+padding:14px 22px;
+border-radius:12px;
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>50 cartas para Emanuel</h1>
+
+<div class="subtitle">
+Un pequeño espacio para abrir palabras cuando las necesites
+</div>
+
+<button onclick="abrirNueva()">Abrir nueva carta</button>
+<button onclick="repetirCarta()">Repetir carta</button>
+
+<div id="carta" class="card">
+<div id="numero" class="card-number"></div>
+<div id="texto" class="card-text"></div>
+</div>
+
+<div id="notice" class="notice"></div>
+
+</div>
+
+<script>
+
+const cartas=[
+"Emanuel, tu forma de existir en este mundo tiene una calma especial que muchas personas desearían encontrar.",
+"A veces la vida avanza silenciosamente, pero incluso en esos momentos tu presencia sigue teniendo valor.",
+"Hay días en los que el simple hecho de seguir adelante ya es un acto enorme de valentía.",
+"No necesitas demostrar nada para merecer tranquilidad, ya eres suficiente tal como eres.",
+"Tu manera de ver el mundo tiene una sensibilidad que pocas personas conservan.",
+"Aunque algunos días parezcan más pesados que otros, siempre existe una nueva oportunidad de respirar profundo.",
+"El mundo cambia constantemente, pero tu esencia sigue siendo algo que vale la pena cuidar.",
+"A veces el descanso también es una forma de avanzar.",
+"Hay algo profundamente humano en tu forma de sentir las cosas.",
+"Tu historia sigue escribiéndose y cada día agrega un capítulo distinto.",
+"Emanuel, recuerda que incluso los momentos difíciles pueden convertirse en parte de tu fortaleza.",
+"Tu capacidad de seguir aprendiendo de la vida es algo admirable.",
+"No todos los días necesitan ser perfectos para que tengan significado.",
+"Aunque a veces no lo notes, tu presencia puede iluminar momentos para otros.",
+"Las pequeñas decisiones que tomas cada día también construyen tu camino.",
+"No subestimes el poder de una mente tranquila y un corazón sincero.",
+"A veces el silencio también tiene respuestas.",
+"Hay belleza en las pausas que la vida nos obliga a tomar.",
+"Eres más resiliente de lo que probablemente imaginas.",
+"Cada día es otra oportunidad de descubrir algo nuevo sobre ti.",
+"Emanuel, la paciencia contigo mismo también es una forma de amor.",
+"No necesitas correr para llegar lejos, a veces avanzar lento es avanzar mejor.",
+"Hay una serenidad especial en aprender a confiar en el proceso.",
+"El mundo puede ser ruidoso, pero tu calma siempre puede ser un refugio.",
+"Las cosas buenas muchas veces llegan cuando menos las esperamos.",
+"Tu presencia tiene un valor que no siempre se mide con palabras.",
+"Cada experiencia te transforma de maneras que aún estás descubriendo.",
+"Ser auténtico en un mundo lleno de ruido ya es una gran cualidad.",
+"A veces las respuestas aparecen cuando dejamos de buscarlas con tanta fuerza.",
+"Recuerda que incluso los días comunes pueden esconder momentos importantes.",
+"Emanuel, dentro de ti hay más fortaleza de lo que imaginas.",
+"Tu capacidad de adaptarte habla mucho de tu carácter.",
+"Hay algo especial en quienes continúan intentando incluso cuando no es fácil.",
+"No necesitas tener todo resuelto hoy.",
+"La vida también se trata de aprender mientras caminamos.",
+"Tu historia tiene valor simplemente porque es tuya.",
+"A veces mirar atrás también sirve para reconocer cuánto has crecido.",
+"Las cosas simples muchas veces guardan la mayor paz.",
+"Hay momentos en los que respirar profundo es todo lo necesario.",
+"No olvides que tu bienestar también importa.",
+"Emanuel, la tranquilidad que buscas también puede construirse poco a poco.",
+"Aunque algunos caminos parezcan inciertos, cada paso sigue contando.",
+"Tu forma de reflexionar demuestra una mente consciente.",
+"A veces el cambio empieza con una sola decisión tranquila.",
+"No hay prisa por entenderlo todo.",
+"Cada día te ofrece la oportunidad de ser un poco más amable contigo mismo.",
+"Las etapas difíciles también terminan enseñando algo.",
+"Tu presencia en el mundo deja pequeñas huellas invisibles.",
+"Las personas que siguen intentando siempre encuentran nuevas rutas.",
+"Y recuerda siempre esto, Emanuel: tu vida tiene un valor que ningún momento difícil puede borrar."
+];
+
+let progreso=localStorage.getItem("cartasProgreso")||0;
+
+function aviso(texto){
+let n=document.getElementById("notice");
+n.innerText=texto;
+n.style.display="block";
+setTimeout(()=>{n.style.display="none";},2500);
+}
+
+function mostrarCarta(num){
+document.getElementById("carta").style.display="block";
+document.getElementById("numero").innerText="Carta "+num;
+document.getElementById("texto").innerText=cartas[num-1];
+}
+
+function abrirNueva(){
+if(progreso>=cartas.length){
+aviso("Ya abriste todas las cartas disponibles.");
+return;
+}
+progreso++;
+localStorage.setItem("cartasProgreso",progreso);
+mostrarCarta(progreso);
+}
+
+function repetirCarta(){
+let num=prompt("¿Qué número de carta quieres volver a abrir?");
+num=parseInt(num);
+if(num<=progreso && num>0){
+mostrarCarta(num);
+}else{
+aviso("Primero debes abrir las cartas en orden.");
+}
+}
+
+</script>
+
+</body>
+</html>
